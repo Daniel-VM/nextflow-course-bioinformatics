@@ -5,6 +5,8 @@ image:
 # Define tasks that will run when the workspace is initialized
 tasks:
   - before: echo "Initializing Gitpod for Nextflow course..."
+
+  - name: Test dependencies
     command: |
       # Optional: Any initialization commands go here
       # Verify Docker
