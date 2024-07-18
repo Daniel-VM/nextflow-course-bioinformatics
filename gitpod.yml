@@ -4,9 +4,11 @@ image:
 
 # Define tasks that will run when the workspace is initialized
 tasks:
-  - init: echo "Initializing Gitpod for Nextflow course..."
+  - before: echo "Initializing Gitpod for Nextflow course..."
     command: |
       # Optional: Any initialization commands go here
+      # Verify Docker
+      docker info || echo "Docker is not running"
       echo "Environment is ready!"
       # If you need to activate the Conda environment for Nextflow, you might need to source the environment here
       source /opt/conda/bin/activate nextflow_course
