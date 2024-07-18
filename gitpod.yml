@@ -1,0 +1,10 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - init: echo "Initializing Gitpod for Nextflow course..."
+    command: |
+      # Optional: Any initialization commands go here
+      echo "Environment is ready!"
+
+# You can remove the ports section if no ports need to be exposed
