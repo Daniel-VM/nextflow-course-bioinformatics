@@ -1,16 +1,20 @@
+# The workspaceLocation specifies the location of your workspace configuration file
 workspaceLocation: gitpod/gitpod-ws.code-workspace
 checkoutLocation: gitpod
 
+# Define the Docker image to use for the workspace
 image:
   file: .github/.gitpod.Dockerfile
 
+# Define tasks that will run when the workspace is initialized
 tasks:
   - init: echo "Initializing Gitpod for Nextflow course..."
     command: |
       # Optional: Any initialization commands go here
       echo "Environment is ready!"
-
-
-
-
-# You can remove the ports section if no ports need to be exposed
+      # If you need to activate the Conda environment for Nextflow, you might need to source the environment here
+      source /opt/conda/bin/activate nextflow_course
+      # Verify that Nextflow and other tools are installed correctly
+      nextflow -version
+      nf-core --version
+      pytest --version
