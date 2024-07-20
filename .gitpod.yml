@@ -6,6 +6,10 @@ image:
 tasks:
   - before: echo "Initializing Gitpod for Nextflow course..."
 
+  - init: install vscode dependency
+    command: |
+      gp install *.vsix
+
   - name: Test dependencies
     command: |
       # Optional: Any initialization commands go here
@@ -18,3 +22,17 @@ tasks:
       nextflow -version
       nf-core --version
       pytest --version
+      # Display course title:
+      cat assets/course_title_ASCIII.txt
+
+vscode:
+    extensions:
+        - codezombiech.gitignore # Language support for .gitignore files
+        - esbenp.prettier-vscode # Markdown/CommonMark linting and style checking for Visual Studio Code
+        - EditorConfig.EditorConfig # Override user/workspace settings with settings found in .editorconfig files
+        - Gruntfuggly.todo-tree # Display TODO and FIXME in a tree view in the activity bar
+        - nextflow.nextflow # Nextflow syntax highlighting
+        - streetsidesoftware.code-spell-checker # Spelling checker for source code
+        - ms-python.python # Python support
+        - redhat.vscode-yaml # YAML support
+        - ms-toolsai.jupyter # Jupyter Notebooks support

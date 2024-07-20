@@ -47,10 +47,5 @@ RUN conda update --quiet --yes --all \
     && conda clean --all --force-pkgs-dirs --yes \
     && echo "source activate nextflow_course" >> ~/.bashrc
 
-# Update Nextflow
-RUN source activate nextflow_course \
-    && nextflow self-update \
-    && nextflow -version
-
 # Set the working directory
 WORKDIR /workspace
