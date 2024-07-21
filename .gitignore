@@ -163,3 +163,13 @@ cython_debug/
 
 # vscode files
 .vscode
+
+# Nextflow
+.nextflow*
+work/
+data/
+results/
+.DS_Store
+testing/
+testing*
+*.pyc
