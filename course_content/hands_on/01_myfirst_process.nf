@@ -64,6 +64,15 @@ process PYTHON_SCRIPT {
     """
 }
 
+process TEST_NOINPUT {
+    tag "Clossing lecture with a test"
+    script:
+    """
+    echo "Process has been executed with no need of all the sections."
+    """
+
+}
+
 workflow {
     // Session 01: Execute a process that converts letters into uppercase
     ch_names = Channel.of('Alice', 'Bob', 'Charlie')
