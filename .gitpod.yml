@@ -12,11 +12,7 @@ tasks:
 
   - name: Test dependencies
     command: |
-      # Optional: Any initialization commands go here
-      # Verify Docker
-      docker info || echo "Docker is not running"
-      echo "Environment is ready!"
-      # If you need to activate the Conda environment for Nextflow, you might need to source the environment here
+      # Activate the conda environment for Nextflow
       source /opt/conda/bin/activate nextflow_course
       # Verify that Nextflow and other tools are installed correctly
       nextflow -version
@@ -24,6 +20,10 @@ tasks:
       pytest --version
       # Display course title:
       cat assets/course_title_ASCIII.txt
+      # Validate environment
+      echo "Environment is ready!"
+  - name: Access to practical lessons directory
+    command: cd /workspace/course-nextflow-bioinformatics/course_content/hands_on
 
 vscode:
     extensions:
