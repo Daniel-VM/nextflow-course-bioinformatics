@@ -4,12 +4,6 @@ image:
 
 # Define tasks that will run when the workspace is initialized
 tasks:
-  - before: echo "Initializing Gitpod for Nextflow course..."
-
-  - init: install vscode dependency
-    command: |
-      gp install *.vsix
-
   - name: Test dependencies
     command: |
       # Activate the conda environment for Nextflow
@@ -18,12 +12,15 @@ tasks:
       nextflow -version
       nf-core --version
       pytest --version
-      # Display course title:
-      cat assets/course_title_ASCIII.txt
       # Validate environment
       echo "Environment is ready!"
-  - name: Access to practical lessons directory
-    command: cd /workspace/course-nextflow-bioinformatics/course_content/hands_on
+
+  - name: Init course workspace
+    command: |
+      # Display course title:
+      cat assets/course_title_ASCIII.txt
+      # Access to practical lessons directory
+      cd /workspace/course-nextflow-bioinformatics/course_content/hands_on
 
 vscode:
     extensions:
