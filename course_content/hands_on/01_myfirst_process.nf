@@ -7,7 +7,7 @@ process CONVERT_TO_UPPER{
     val my_name
 
     output:
-    val my_name						        , emit: value
+    val my_name             , emit: value
     path "*_uppercase.txt"	, emit: base
 
     script:
@@ -23,7 +23,7 @@ process BASH_SAYHELLO {
     val my_name
 
     output:
-    val my_name                                , emit: value
+    val my_name             , emit: value
 
     script:
     """
@@ -38,7 +38,7 @@ process PYTHON_HELLOWORLD {
     val my_name
 
     output:
-    val my_name                                , emit: value
+    val my_name             , emit: value
 
     script:
     """
@@ -55,7 +55,7 @@ process PYTHON_SCRIPT {
     val my_name
 
     output:
-    val my_name                                , emit: value
+    val my_name             , emit: value
 
     script:
     """
