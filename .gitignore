@@ -167,7 +167,7 @@ cython_debug/
 # Nextflow
 .nextflow*
 work/
-data/
+test/
 results/
 .DS_Store
 testing/
