@@ -20,7 +20,7 @@ tasks:
       # Display course title:
       cat assets/course_title_ASCIII.txt
       # Access to practical lessons directory
-      cd /workspace/course-nextflow-bioinformatics/course_content/hands_on
+      cd /workspace/nextflow-course-bioinformatics/course_content/hands_on
       source /opt/conda/bin/activate nextflow_course
 
 vscode:
