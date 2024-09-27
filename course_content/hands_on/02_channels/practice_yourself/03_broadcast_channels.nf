@@ -1,29 +1,38 @@
-// Step 1: Define default analysis parameters
-params.reference = 'hg38'
-params.threshold = 0.8
+// Step 1: Create a channel for FASTQ files
+ch_fastq_files = Channel.fromFilePairs('../../datasets/fastq/*_R{1,2}.fastq.gz')
+ch_reference = Channel.fromPath('../../datasets/fasta/dummy_fasta_morif.fasta')
 
-// Step 2: Create a channel for FASTQ files
-ch_fastq_files = Channel.fromPath('../../datasets/fastq/*.fastq.gz')
 
-// Step 3: Use both channels in a process
+// Step 2: Use both channels in a process
 process ALIGN_SEQUENCES {
+    tag "${meta}"
+
     input:
-    path fastq_file
+    tuple val(meta), path(fastq_file)
+    path fasta_ref
 
     output:
-    path "*.bam", emit: bam
+    path "*.bam", emit: aligned_bam
 
     script:
-    def prefix = fastq_file.getSimpleName()
+    def prefix = fastq_file[0].getSimpleName()
     """
-    echo "Aligning ${fastq_file} using reference ${params.reference} with threshold ${params.threshold}."
+    echo "Aligning ${prefix} using reference ${fasta_ref} with threshold ${params.threshold}."
     # Simulate alignment process
-    echo "Alignment completed for ${fastq_file}." > ${prefix}.bam
+    echo "Alignment completed for fastq sequences of sample ${prefix}." > ${prefix}.bam
     """
 }
 
-// Step 4: Run the workflow and view the results
+// Step 3: Run the workflow and view the results
 workflow {
-    ALIGN_SEQUENCES(ch_fastq_files)
-    ALIGN_SEQUENCES.out.bam.view{ "Successfully aligned: ${it.baseName}"}
+    ch_fastq_files
+        .combine(ch_reference)
+        .set {ch_to_alignment}
+    
+    ALIGN_SEQUENCES (
+        ch_to_alignment.map {meta, fastqs, fasta -> tuple(meta, fastqs) },
+        ch_to_alignment.map {meta, fastqs, fasta -> fasta },
+    )
+    
+    ALIGN_SEQUENCES.out.aligned_bam.view{ "Successfully aligned: ${it.baseName}"}
 }

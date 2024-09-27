@@ -19,7 +19,7 @@ ch_fastq
 
 // Process: Run FastQC on the combined FASTQ files.
 process FASTQC {
-    tag "${meta.sample_id}"
+    tag "${meta}"
 
     input:
     tuple val(meta), path(fastq_files)
@@ -28,7 +28,6 @@ process FASTQC {
     path "fastqc_report/*.html", emit: html
 
     script:
-    def prefix = meta.sample_id ? meta.sample_id : "random_name"
     """
     mkdir fastqc_report
     fastqc -o fastqc_report -f fastq -q ${fastq_files}
@@ -40,4 +39,4 @@ workflow {
     FASTQC(ch_fastq_with_meta)
 }
 
-// Command to run this script: nextflow run 01_combining_fastq_metadata.nf -with-conda environment.yml -resume
+// Command to run this script: nextflow run 01_combining_fastq_metadata.nf -with-conda ../envs/environment.yml -resume
