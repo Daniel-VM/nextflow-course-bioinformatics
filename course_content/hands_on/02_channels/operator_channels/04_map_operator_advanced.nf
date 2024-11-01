@@ -1,11 +1,13 @@
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Nextflow course - Advanced Map Operator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// Mapping and combining with a quality channel
-def qualityChannel = Channel.from(['high', 'medium', 'low'])
+// Define a quality channel with quality labels for each sample
+Channel.fromList([
+        ['random_sample1_LQ', 'low'],
+        ['sample_101', 'high'],
+        ['sample_202', 'high'],
+        ['random_sample4_LQ', 'low']])
+    .map {sample_name, quality -> 
+        return  [sample_name, quality]
+    }
+    .set { qualityChannel }
 
 Channel
     .fromFilePairs('../../datasets/fastq/*_R{1,2}.fastq.gz')
@@ -15,11 +17,12 @@ Channel
         return [['id': id, 'project': proj_id, 'sizes': file_sizes], fastqs]
     }
     .combine(qualityChannel)
-    .map { info, fastqs, quality ->
-        if (quality == 'high') {
-            return [info + ['quality': quality], fastqs]
+    .map { info, fastqs, quality_name, quality_info ->
+        if (info.id == quality_name) {
+            info.quality = quality_info
+            return [info , fastqs]
         }
         return null
     }
-    .filter { it != null }
+    .filter{ [it] != [null] }
     .view { "Sample with quality: $it" }

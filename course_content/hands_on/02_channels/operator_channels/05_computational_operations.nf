@@ -1,28 +1,33 @@
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Nextflow course - Computational Operations with Map
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// Computational operation: Count sequences in each FASTA file
+// Perform computations on each FASTA file
 Channel
     .fromPath('../../datasets/fasta/*.fasta')
     .map { fasta ->
         def proj_id = "project_id_123"
-        def file_size = fasta.size() // Get the file size for each fasta file
+        def file_size = fasta.size()
         def seq_count = 0
+        def total_length = 0
+        def seq_length = 0
 
-        // Count sequences in the fasta file
+        // Count sequences and total length for average calculation
         fasta.eachLine { line -> 
-            if (line.startsWith('>')) seq_count++
+            if (line.startsWith('>')) {
+                if (seq_length > 0) total_length += seq_length
+                seq_count++
+                seq_length = 0
+            } else {
+                seq_length += line.size()
+            }
         }
+        if (seq_length > 0) total_length += seq_length
 
-        // Return a map containing metadata about the fasta file
+        def avg_length = seq_count > 0 ? total_length / seq_count : 0
+
         return [ 
             'id': fasta.getBaseName(),
             'project': proj_id, 
             'size': file_size, 
-            'seq_count': seq_count 
+            'seq_count': seq_count,
+            'avg_length': avg_length 
         ]
     }
-    .view { "Fasta file with metadata: $it" }
+    .view { "FASTA file with metadata: $it" }

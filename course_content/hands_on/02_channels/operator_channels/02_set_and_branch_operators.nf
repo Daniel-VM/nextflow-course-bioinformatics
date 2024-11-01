@@ -4,21 +4,15 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Create a channel and view its content
-//Channel
-//    .fromPath('../../datasets/fastq/random_sample*.fastq.gz')
-//    .set { ch_fastpaths }
-//
-//ch_fastpaths.view { "Channel 'ch_fastqpaths' carrying file: '$it'" }
-
-// Create branches based on file naming pattern
+// Load FASTQ files and split them into branches based on quality score suffixes
 Channel
-    .fromPath('../../datasets/fastq/random_sample*.fastq.gz')
+    .fromPath('../../datasets/fastq/*.fastq.gz')
     .branch {
-        R1: it.toString().contains("_R1")
-        R2: it.toString().contains("_R2")
+        high_quality: it.toString().contains("_HQ")
+        low_quality: it.toString().contains("_LQ")
     }
     .set { ch_fastqs }
 
-ch_fastqs.R1.view { "This is channel 'ch_fastqs' on branch R1 carrying R1 files: ${it.baseName}" }
-ch_fastqs.R2.view { "This is channel 'ch_fastqs' on branch R2 carrying R2 files: ${it.baseName}" }
+// View files in each quality branch
+ch_fastqs.high_quality.view { "High Quality FASTQ File: ${it.baseName}" }
+ch_fastqs.low_quality.view { "Low Quality FASTQ File: ${it.baseName}" }

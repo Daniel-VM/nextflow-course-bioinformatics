@@ -1,24 +1,15 @@
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Nextflow course - Map Operator Basics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+// Define a map of sample metadata with sequencing batch information
+def sample_batches = [
+    'sample1': 'batch_1',
+    'sample2': 'batch_2',
+    'sample3': 'batch_1',
+    'sample4': 'batch_2'
+]
 
-// Basic mapping: Add project ID to each sample
 Channel
     .fromFilePairs('../../datasets/fastq/*_R{1,2}.fastq.gz')
     .map { id, fastqs ->
-        def proj_id = "project_id_123"
-        return [['id': id, 'project': proj_id], fastqs]
+        def batch = sample_batches[id] ?: 'unknown'  // Assign batch if available, else 'unknown'
+        return [[sample_id: id, batch: batch], fastqs]
     }
-    .view { "Mapped element: $it" }
-
-// Adding file size information
-//Channel
-//    .fromFilePairs('../../datasets/fastq/*_R{1,2}.fastq.gz')
-//    .map { id, fastqs ->
-//        def proj_id = "project_id_123"
-//        def file_sizes = fastqs.collect { it.size() }
-//        return [['id': id, 'project': proj_id, 'sizes': file_sizes], fastqs]
-//    }
-//    .view { "Mapped element with sizes: $it" }
+    .view { "Mapped element with batch: $it" }
