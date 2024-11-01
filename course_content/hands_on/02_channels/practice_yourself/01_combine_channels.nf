@@ -1,22 +1,39 @@
-// FIXME: NOT WORKING
-// Step 1: Create a channel for paired-end FASTQ files
-// Replace the path with your actual file path
-ch_fastq_pairs = Channel.fromFilePairs('../../datasets/fastq/*_R{1,2}.fastq.gz')
+// Step 1: Define a channel with metadata information for each sample
+ch_metadata = Channel.from([
+    ['sample1', 'control', 'healthy'],
+    ['sample2', 'treatment', 'diseased']
+])
 
-// Step 2: Create a channel for sample metadata
-// The CSV file should have columns like "sample_id, group, condition"
-ch_metadata = Channel.fromPath('../../datasets/metadata/sample_metadata.csv')
-                    .splitCsv(header: true)
+// Step 2: Define a channel with FASTQ file paths, keyed by sample_id
+ch_fastq_pairs = Channel.from([
+    ['sample1', ['../../datasets/fastq/*sample1_R1.fastq.gz', '../../datasets/fastq/*sample1_R2.fastq.gz']],
+    ['sample2', ['../../datasets/fastq/*sample2_R1.fastq.gz', '../../datasets/fastq/*sample2_R2.fastq.gz']]
+])
 
-// Step 3: Use the `join` operator to combine channels based on sample_id
+// Step 3: Use join() operator to combine in a single channel fastq files and their metadata.
 ch_fastq_pairs
-    .join(ch_metadata) { fastq, meta -> 
-        // Join on the sample_id from metadata and fastq tuple key
-        return fastq[0] == meta.sample_id ? fastq[0] : null
+    .join(ch_metadata)
+    .set { ch_fastq_metadata }
+
+// Step 4: Use `map` to format metadata and FASTQ files structure
+ch_fastq_metadata
+    .map {sample_id, fastq, group, condition ->
+        def meta = [:]
+        meta.sample_id  = sample_id
+        meta.group      = group
+        meta.condition  = condition
+
+        return [meta, fastq]
+        
     }
-    .map { fastq, meta ->
-        // Map the joined elements to desired output format
-        return [meta, fastq[1]]
-    }
-    .filter { it != null }
-    .view { "Sample: ${it[0].sample_id}, Group: ${it[0].group}, Condition: ${it[0].condition}, FASTQ Files: ${it[1]}" }
+    .set {ch_fastq_metadata_formated}
+
+// Step 5: use filter to find fastq files of patients in group 'treatment' condition
+ch_fastq_metadata_formated
+    .filter {meta, fastq -> meta.group == 'treatment'}
+    .set {ch_fastq_treatment}
+
+// View the final output
+ch_fastq_treatment.view { meta, fastq ->
+    " ${meta.sample_id.toUpperCase()} belongs from group ${meta.group.toUpperCase()} cataloged as ${meta.condition.toUpperCase()}. Associated files: ${fastq.flatten().join(', ')}"
+}
