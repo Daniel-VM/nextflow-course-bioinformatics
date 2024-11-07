@@ -1,24 +1,30 @@
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Nextflow course - Executing Python Scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+// Process to run an external Python script for a specific analysis
 process PYTHON_SCRIPT_EXECUTION {
-    tag "Running script for $name"
+    tag "Executing external script for $analysis_name"
 
     input:
-    val name
+    val analysis_name
 
     output:
-    val name, emit: value
+    val analysis_name, emit: value
 
     script:
     """
-    SCRIPT_PATH='/workspace/nextflow-course-bioinformatics/course_content/hands_on/bin'
-    python \$SCRIPT_PATH/process_exe_script.py $name
+    PATH_BIN='/workspace/nextflow-course-bioinformatics/course_content/hands_on/bin'
+    python \$PATH_BIN/analyze_data.py $analysis_name
     """
 }
 
 workflow {
-    // Create a channel with names
-    ch_names = Channel.of('Alice', 'Bob', 'Charlie')
+    // Create a channel with analysis names
+    ch_analyses = Channel.of('Variant Analysis', 'Alignment', 'Assembly')
 
-    // Run process
-    PYTHON_SCRIPT_EXECUTION(ch_names)
-
+    // Run the process
+    PYTHON_SCRIPT_EXECUTION(ch_analyses)
 }

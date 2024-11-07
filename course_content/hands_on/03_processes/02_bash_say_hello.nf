@@ -1,23 +1,29 @@
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Nextflow course - Bash Greeting Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+// Process to display a greeting for each bioinformatics tool
 process BASH_SAYHELLO {
-    tag "Greeting $name"
+    tag "Greeting for $tool_name"
 
     input:
-    val name
+    val tool_name
 
     output:
-    val name, emit: value
+    val tool_name, emit: value
 
     script:
     """
-    echo "Hello, $name! Welcome to bioinformatics!"
+    echo "Hello, $tool_name! You are essential for bioinformatics workflows."
     """
 }
 
 workflow {
-    // Create a channel with names
-    ch_names = Channel.of('Alice', 'Bob', 'Charlie')
+    // Create a channel with bioinformatics tool names
+    ch_tools = Channel.of('BLAST', 'BWA', 'GATK')
 
-    // Run process
-    BASH_SAYHELLO(ch_names)
-
+    // Run the process
+    BASH_SAYHELLO(ch_tools)
 }

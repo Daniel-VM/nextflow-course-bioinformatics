@@ -1,24 +1,52 @@
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Nextflow course - Python Script with Data Processing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+// Process to execute a Python script that reads and processes a sample sequence
 process PYTHON_HELLO_WORLD {
-    tag "Executing Hello World for $name"
+    tag "Python analysis for $analysis_type"
 
     input:
-    val name
+    tuple val(analysis_type), path(input_file)
 
     output:
-    val name, emit: value
+    path "${analysis_type}_processed.txt", emit: processed_file
 
     script:
     """
     #!/usr/bin/env python
-    print("Hello, $name! This is a Python script.")
+    import os
+
+    # File paths provided by Nextflow
+    input_path = '${input_file}'
+    output_path = f"{'${analysis_type}'}_processed.txt"
+
+    def analyze_sequences(file_path):
+        with open(file_path, 'r') as file:
+            sequences = file.readlines()
+        total_length = sum(len(seq.strip()) for seq in sequences if not seq.startswith('>'))
+        return total_length
+
+    total_length = analyze_sequences(input_path)
+
+    # Write analysis results to a new file
+    with open(output_path, 'w') as out_file:
+        out_file.write(f"Total sequence length in {input_path}: {total_length}\\n")
+
+    print(f"Processing completed for {input_path}.")
     """
 }
 
 workflow {
-    // Create a channel with names
-    ch_names = Channel.of('Alice', 'Bob', 'Charlie')
+    // Create a channel with analysis types and input files
+    ch_analysis_files = Channel.fromPath('../datasets/fasta/*.fasta')
 
-    // Run process
-    PYTHON_HELLO_WORLD(ch_names)
+    ch_analysis_files
+        .map { file -> tuple(file.baseName, file) }
+        .set { ch_named_files }
 
+    // Run the process
+    PYTHON_HELLO_WORLD(ch_named_files)
 }

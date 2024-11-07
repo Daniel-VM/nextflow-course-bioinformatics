@@ -1,24 +1,30 @@
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Nextflow course - Convert to Uppercase
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+// Process to convert gene identifiers to uppercase format
 process CONVERT_TO_UPPER {
-    tag "$name"
+    tag "$gene_id"
 
     input:
-    val name
+    val gene_id
 
     output:
-    val name, emit: value
+    val gene_id, emit: value
     path "*_uppercase.txt", emit: file
 
     script:
     """
-    echo $name | tr '[:lower:]' '[:upper:]' > ${name}_uppercase.txt
+    echo $gene_id | tr '[:lower:]' '[:upper:]' > ${gene_id}_uppercase.txt
     """
 }
 
 workflow {
-    // Create a channel with names
-    ch_names = Channel.of('Alice', 'Bob', 'Charlie')
+    // Create a channel with gene identifiers
+    ch_gene_ids = Channel.of('brca1', 'tp53', 'egfr')
 
     // Run process
-    CONVERT_TO_UPPER(ch_names)
-
+    CONVERT_TO_UPPER(ch_gene_ids)
 }
