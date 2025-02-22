@@ -1,0 +1,3 @@
+[submodule "course_content/course_content/hands_on/training_workflows/hello"]
+	path = course_content/course_content/hands_on/training_workflows/hello
+	url = https://github.com/nextflow-io/hello
