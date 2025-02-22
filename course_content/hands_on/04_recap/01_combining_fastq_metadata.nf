@@ -11,6 +11,7 @@ Channel
     .map { row -> tuple(row.sample_id, row) }  // Emit a tuple with sample_id and metadata row.
     .set { ch_metadata }
 
+
 // Operator: Join FASTQ files with metadata based on sample ID.
 ch_fastq
     .join(ch_metadata)

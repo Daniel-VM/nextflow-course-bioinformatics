@@ -1,5 +1,5 @@
 sample_id,group,condition
-random_sample1,control,healthy
-random_sample2,control,healthy
-random_sample3,treatment,diseased
-random_sample4,treatment,diseased
+random_sample1_LQ,control,healthy
+random_sample2_HQ,control,healthy
+random_sample3_HQ,treatment,diseased
+random_sample4_LQ,treatment,diseased
