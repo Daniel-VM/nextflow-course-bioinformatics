@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     gnupg \
     lsb-release \
+    openjdk-11-jre-headless \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Conda
@@ -33,11 +34,10 @@ RUN conda config --add channels defaults \
     && conda config --add channels conda-forge \
     && conda config --set channel_priority strict
 
-# Create and activate the conda environment in one RUN step
+# Create and activate the conda environment and install dependencies
 RUN conda update --quiet --yes --all \
     && conda create --quiet --yes --name nextflow_course \
         mamba \
-        nextflow \
         nf-core \
         nf-test \
         black \
@@ -46,6 +46,14 @@ RUN conda update --quiet --yes --all \
         pytest-workflow \
     && conda clean --all --force-pkgs-dirs --yes \
     && echo "source activate nextflow_course" >> ~/.bashrc
+
+# Install the latest version of Nextflow directly from GitHub
+RUN curl -fsSL https://get.nextflow.io | bash \
+    && mv nextflow /usr/local/bin/ \
+    && chmod +x /usr/local/bin/nextflow
+
+# Verify Nextflow installation
+RUN nextflow -version
 
 # Set the working directory
 WORKDIR /workspace
