@@ -5,7 +5,7 @@
 */
 
 // Process to execute a Python script that reads and processes a sample sequence
-process PYTHON_HELLO_WORLD {
+process PYTHON_ANALYSIS_PROCESSING {
     tag "Python analysis for $analysis_type"
 
     input:
