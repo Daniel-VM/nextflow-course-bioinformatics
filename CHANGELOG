@@ -1,0 +1,20 @@
+# 📝 **Changelog
+
+## 🚀 **Version 1.0.0dev:** *2025-02-24*  
+
+First official release of the Nextflow Course on Gitpod. 
+
+---
+
+## 🔑 **What's New:**  
+- ✅ Exercises on **channels, processes, operators, and workflows**.  
+- ✅ **Resource management** using process labels and profiles (`local`, `hpc`).  
+- ✅ Modular configuration files:  
+  - `nextflow.config` for global settings  
+  - `conf/base.config` (local) and `conf/hpc.config` (HPC)*  
+- ✅ Updated **Gitpod environment** and Docker setup.  
+- ✅ Clear **readme files** and instructions for running pipelines.  
+
+---
+
+⚠️ **Note:** The `hpc` profile requires access to an HPC system. Use `local` if you don’t have one.  
