@@ -18,6 +18,3 @@ workflow PARSING_FASTQS {
 workflow {
     PARSING_FASTQS (ch_input)
 }
-
-// To modify params via CLI just follow this example:
-// nextflow run 01_parsing_fastqs.nf --project_id 'new_project'

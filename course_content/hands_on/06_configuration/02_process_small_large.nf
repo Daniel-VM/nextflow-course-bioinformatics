@@ -13,10 +13,9 @@ process FASTQC_PROCESS_SMALL {
     path "fastqc_report/*.html", emit: html
 
     script:
-    def memory_in_mb = MemoryUnit.of("${task.memory}").toUnit('MB')
-    // FastQC memory value allowed range (100 - 10000)
+    def memory_in_mb = task.memory ? task.memory.toUnit('MB').toFloat() / task.cpus : null
     def fastqc_memory = memory_in_mb > 10000 ? 10000 : (memory_in_mb < 100 ? 100 : memory_in_mb)
-
+    
     """
     mkdir fastqc_report
     fastqc \\
@@ -30,6 +29,8 @@ process FASTQC_PROCESS_SMALL {
     """
 }
 
+
+// FIXME: this exercise isnt working
 process FASTQC_PROCESS_LARGE {
     tag "$meta"
     label 'large'
@@ -41,8 +42,8 @@ process FASTQC_PROCESS_LARGE {
     path "fastqc_report/*.html", emit: html
 
     script:
-    def memory_in_mb = MemoryUnit.of("${task.memory}").toUnit('MB')
     // FastQC memory value allowed range (100 - 10000)
+    def memory_in_mb = task.memory ? task.memory.toUnit('MB').toFloat() / task.cpus : null
     def fastqc_memory = memory_in_mb > 10000 ? 10000 : (memory_in_mb < 100 ? 100 : memory_in_mb)
     """
     mkdir fastqc_report
@@ -59,7 +60,10 @@ process FASTQC_PROCESS_LARGE {
 
 // WOKRFLOW
 workflow {
+    // This runs a process with low demand of computational resources
     FASTQC_PROCESS_SMALL(ch_input)
+
+    // This one perform the same task but with more resources available
     FASTQC_PROCESS_LARGE(ch_input)
 }
 
